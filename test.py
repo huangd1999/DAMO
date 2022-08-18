@@ -64,7 +64,7 @@ def test(model, test_data, args, mode='test'):
 
 if __name__ =='__main__':
     parser = argparse.ArgumentParser(description='Adversarial Test')
-    parser.add_argument('--weights', type=str, default='./checkpoint/WRN-28-10-branch0-CIFAR10-PGD.pt', help='saved model path')
+    parser.add_argument('--weights', type=str, default='./checkpoint/WRN-28-10-branch3-CIFAR10-PGD.pt', help='saved model path')
     parser.add_argument('--data_root', type=str, default='../data/', help='dataset path')
     parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset name')
     parser.add_argument('--batch_size', type=int, default=100, help='mini-batch size')
