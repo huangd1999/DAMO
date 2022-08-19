@@ -6,7 +6,9 @@ Two Heads are Better than One: Robust Learning Meets Multi-branch Models
 ```
 git clone https://github.com/huangd1999/BORT.git
 cd BORT
-conda install torchattacks
+pip install torchattacks
+mkdir checkpoint
+$ Download pretrain model from Google Drive
 ```
 
 ## fast eval of BORT with WRN-28-10 on cifar10 dataset
