@@ -33,7 +33,7 @@ def train(model, train_data, test_data, args):
     best_acc = 0
     logger.info('Epoch \t Test acc \t Train Loss \t Train Acc')
     for epoch in range(args.epoch):
-        beta = 3 if epoch<40 else 1
+        beta = 5 if epoch<40 else 1
         train_loss = 0
         train_acc = 0
         train_n = 0
@@ -96,7 +96,7 @@ def train(model, train_data, test_data, args):
 if __name__ =='__main__':
     parser = argparse.ArgumentParser(description='Adversarial Test')
     parser.add_argument('--save_path', type=str, default='./checkpoint', help='saved weight path')
-    parser.add_argument('--pretrained', type=str, default='./checkpoint/cosWRN-28-10-branch0-CIFAR10-PGD.pt', help='pretrained model path')
+    parser.add_argument('--pretrained', type=str, default=None, help='pretrained model path')
     parser.add_argument('--data_root', type=str, default='../data/', help='dataset path')
     parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset name')
     parser.add_argument('--attack', type=str, default='PGD', help='attack method')
@@ -105,8 +105,8 @@ if __name__ =='__main__':
     parser.add_argument('--lr', type=float, default=0.1, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='weight decay')
     parser.add_argument('--subnet', type=str, default='WRN', help='subnet')
-    parser.add_argument('--out_dir', type=str, default='./train_log/', help='log output dir')
-    parser.add_argument('--branch', type=int, default=2, help='training branch')
+    parser.add_argument('--out_dir', type=str, default='./log/', help='log output dir')
+    parser.add_argument('--branch', type=int, default=0, help='training branch')
     parser.add_argument('--step', type=int, default=40, help='attack method') 
     parser.add_argument('--loss', type=str, default='trades', help='attack method') 
     parser.add_argument('--n_classes', type=int, default=10, help='num classes')

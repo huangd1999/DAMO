@@ -101,14 +101,14 @@ class BORT(nn.Module):
         if sub_network == 'ResNet20':
             self.dynamic_layer = nn.ModuleList([ResNet20(kernel_size=x, num_classes=num_classes) for x in [3,5,7,9]])
         elif sub_network == 'WRN':
-            self.dynamic_layer = nn.ModuleList([WideResNet(depth=28, widen_factor=10, num_classes=num_classes) for i in range(4)])
+            self.dynamic_layer = nn.ModuleList([WideResNet(depth=28, widen_factor=4, num_classes=num_classes) for i in range(2)])
 
 
 
     def forward(self,x):
         x = self.norm(x)
         x = self.head(x)
-        return self.dynamic_layer[random.randint(0,3)](x)
+        return self.dynamic_layer[0](x)
 
     def cosine_loss(self,x,branch):
         x = self.norm(x)
