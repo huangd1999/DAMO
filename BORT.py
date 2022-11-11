@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import random
+import numpy as np
 from wide_resnet import WideResNet
 
 cifar10_mean = (0.4914, 0.4822, 0.4465)
@@ -82,12 +82,23 @@ class ResNet20(nn.Module):
     def forward(self, x):
         return self.net(x)
 
+class RoutingModule(nn.Module):
+    def __init__(self):
+        super(RoutingModule, self).__init__()
+        self.net = nn.Sequential(
+            ResidualBlock(3, 16, 1),
+            ResidualBlock(16, 32, 2),
+            ResidualBlock(32, 64, 1),
+            ClassifierModule(64, 4)
+        )
 
+    def forward(self, x):
+        return self.net(x)
 
 class BORT(nn.Module):
     def __init__(self, sub_network = 'WRN', num_classes = 10) -> None:
         super(BORT,self).__init__()
-        self.norm = Norm_layer(cifar100_mean, cifar100_std)
+        self.norm = Norm_layer(cifar10_mean, cifar10_std)
         self.inchannel = 16
         self.expansion = 1
         self.head = nn.Sequential(
@@ -99,23 +110,27 @@ class BORT(nn.Module):
         assert sub_network in ['ResNet20', 'WRN'] 
 
         if sub_network == 'ResNet20':
-            self.dynamic_layer = nn.ModuleList([ResNet20(kernel_size=x, num_classes=num_classes) for x in [3,5,7,9]])
+            self.dynamic_layer = nn.ModuleList([ResNet20(kernel_size=x, num_classes=num_classes) for x in [3,3,3,3]])
         elif sub_network == 'WRN':
-            self.dynamic_layer = nn.ModuleList([WideResNet(depth=28, widen_factor=4, num_classes=num_classes) for i in range(2)])
+            self.dynamic_layer = nn.ModuleList([WideResNet(depth=34, widen_factor=10, num_classes=num_classes) for i in range(4)])
 
 
-
-    def forward(self,x):
+    def forward(self,x, branch=-1):
         x = self.norm(x)
         x = self.head(x)
-        return self.dynamic_layer[0](x)
+        if branch == -1:
+            branch = np.random.randint(0,4)
+
+        return self.dynamic_layer[branch](x)
+
 
     def cosine_loss(self,x,branch):
         x = self.norm(x)
         x = self.head(x)
         if branch==0:
             return 0
-        return sum([torch.cosine_similarity(self.dynamic_layer[branch].block1(x).flatten(),self.dynamic_layer[i].block1(x).flatten(),dim=0) for i in range(branch)])/branch
+        return sum([torch.cosine_similarity(self.dynamic_layer[branch].net[0](x).flatten()\
+                    ,self.dynamic_layer[i].net[0](x).flatten(),dim=0) for i in range(branch)]) / branch
 
 
 if __name__ == "__main__":

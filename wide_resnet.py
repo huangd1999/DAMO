@@ -49,7 +49,7 @@ class NetworkBlock(nn.Module):
 
 class WideResNet(nn.Module):
     """ Based on code from https://github.com/yaodongyu/TRADES """
-    def __init__(self, depth=70, num_classes=10, widen_factor=16, sub_block1=False, dropRate=0.0, bias_last=True):
+    def __init__(self, depth=34, num_classes=10, widen_factor=10, sub_block1=False, dropRate=0.0, bias_last=True):
         super(WideResNet, self).__init__()
         nChannels = [16, 16 * widen_factor, 32 * widen_factor, 64 * widen_factor]
         assert ((depth - 4) % 6 == 0)
@@ -86,8 +86,11 @@ class WideResNet(nn.Module):
     def forward(self, x):
         # out = self.conv1(x)
         out = self.block1(x)
+        # f1 = out.clone()
         out = self.block2(out)
+        # f2 = out.clone()
         out = self.block3(out)
+        # f3 = out.clone()
         out = self.relu(self.bn1(out))
         out = F.avg_pool2d(out, 8)
         out = out.view(-1, self.nChannels)
