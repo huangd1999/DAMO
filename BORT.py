@@ -118,9 +118,6 @@ class BORT(nn.Module):
     def forward(self,x, branch=-1):
         x = self.norm(x)
         x = self.head(x)
-        if branch == -1:
-            branch = np.random.randint(0,4)
-
         return self.dynamic_layer[branch](x)
 
 
