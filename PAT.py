@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from dataset import Dataset
-from BORT import BORT
+from DAMO import DAMO
 from test import test
 from torchsummary import summary
 import torchattacks
@@ -122,7 +122,7 @@ if __name__ =='__main__':
     train_data = Dataset(path = args.data_root, dataset = args.dataset, train = True)
     test_data = Dataset(path = args.data_root, dataset = args.dataset, train = False)
 
-    model = BORT(args.subnet, num_classes=args.n_classes).cuda()
+    model = DAMO(args.subnet, num_classes=args.n_classes).cuda()
     if args.pretrained != None:
         model.load_state_dict(torch.load(args.pretrained), strict=True)
     # print(model)

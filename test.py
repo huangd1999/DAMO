@@ -13,7 +13,7 @@ import torchvision.models as models
 from ARC_attack import attack_ARC_linf
 from dataset import Dataset
 from tSNE import tsne
-from BORT import BORT
+from DAMO import DAMO
 from PGD import PGD
 
 
@@ -140,7 +140,7 @@ def test(model, test_data, args, mode='test'):
 
 if __name__ =='__main__':
     parser = argparse.ArgumentParser(description='Adversarial Test')
-    parser.add_argument('--weights', type=str, default='./checkpoint/BORT-ResNet20-branch-2-CIFAR10.pt', help='saved model path')
+    parser.add_argument('--weights', type=str, default='./checkpoint/DAMO-ResNet20-branch-2-CIFAR10.pt', help='saved model path')
     parser.add_argument('--routing_weights', type=str, default='./checkpoint/routing_WRN-34-10-cifar10.pt', help='saved routing module path')
     parser.add_argument('--data_root', type=str, default='../data/', help='dataset path')
     parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset name')
@@ -149,7 +149,7 @@ if __name__ =='__main__':
     parser.add_argument('--step', type=int, default=40, help='attack method')
     args = parser.parse_args()
     device = 'cuda'
-    model = BORT(sub_network='WRN').to(device)
+    model = DAMO(sub_network='WRN').to(device)
     model.load_state_dict(torch.load(args.weights), strict=True)
     model = model.to(device)
     test_data = Dataset(path = args.data_root, dataset = args.dataset, train = False)

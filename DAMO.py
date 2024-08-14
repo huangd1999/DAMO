@@ -95,9 +95,9 @@ class RoutingModule(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-class BORT(nn.Module):
+class DAMO(nn.Module):
     def __init__(self, sub_network = 'WRN', num_classes = 10) -> None:
-        super(BORT,self).__init__()
+        super(DAMO,self).__init__()
         self.norm = Norm_layer(cifar10_mean, cifar10_std)
         self.inchannel = 16
         self.expansion = 1
@@ -133,7 +133,7 @@ class BORT(nn.Module):
 if __name__ == "__main__":
     inp_c = torch.rand(16,3,32,32)
 
-    model = BORT()
+    model = DAMO()
     print(model.head)
     output = model(inp_c)
     print(output.shape)

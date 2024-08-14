@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from dataset import Dataset
-from BORT import BORT, RoutingModule
+from DAMO import DAMO, RoutingModule
 from test import test
 from torchsummary import summary
 import torchattacks
@@ -126,7 +126,7 @@ def train(model, train_data, test_data, args):
             acc_ori, acc_adv = test(model, test_data, args, mode='test')
             if acc_ori + acc_adv > best_acc:
                 best_acc = acc_adv + acc_ori
-                saved_name = '{0}-{1}-{2}.pt'.format('BORT-ResNet20-branch', args.branch, args.dataset)
+                saved_name = '{0}-{1}-{2}.pt'.format('DAMO-ResNet20-branch', args.branch, args.dataset)
                 torch.save(model.state_dict(), os.path.join(args.save_path, saved_name))
             logger.info('Test Acc \t PGD Acc')
             logger.info(' %.4f \t %.4f ', acc_ori, acc_adv)
@@ -159,7 +159,7 @@ if __name__ =='__main__':
     args = parser.parse_args()
 
 
-    logfile = os.path.join(args.out_dir, 'BORT-ResNet20-branch{0}-{1}.log'.format(str(args.branch), args.dataset))
+    logfile = os.path.join(args.out_dir, 'DAMO-ResNet20-branch{0}-{1}.log'.format(str(args.branch), args.dataset))
     if os.path.exists(logfile):
         os.remove(logfile)
     logging.basicConfig(
@@ -175,7 +175,7 @@ if __name__ =='__main__':
     train_data = Dataset(path = args.data_root, dataset = args.dataset, train = True)
     test_data = Dataset(path = args.data_root, dataset = args.dataset, train = False)
 
-    model = BORT(args.subnet, num_classes=args.n_classes).cuda()
+    model = DAMO(args.subnet, num_classes=args.n_classes).cuda()
     # model = WideResNet().cuda()
     if args.pretrained != None:
         model.load_state_dict(torch.load(args.pretrained), strict=True)
